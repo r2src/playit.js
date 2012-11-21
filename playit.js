@@ -1,14 +1,60 @@
-/**
- * Config:
- * - playlist (required):
- * - container (optional): the id of the div in which the embed-code should be
- *   placed. Default is 'player'.
- */
+var container = 'player';
+var index = 0;
+var waiting_for_yt_player = false;
 
-function play(config) {
-	if(!config.playlist) throw Error('Missing key "playlist" in config');
-	// Container is the DOM element that will hold the iframe.
-	var container = $('#' + (config.container ? config.container : 'player'));
+load_yt_player_async();
+load();
 
-	alert(container.html());
+function load() {
+    switch (playlist[index].site) {
+    case 'GOOGLE':
+	if ('YT' in window && 'Player' in window.YT) {
+	    load_yt_video(playlist[index].id);
+	} else {
+	    waiting_for_yt_player = true;
+	}
+	break;
+    case 'VIMEO':
+	load_vimeo_video(playlist[index].id);
+	break;
+    }
 }
+
+function load_next() {
+    index += 1;
+    load();
+}
+
+var player;
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+	height: '390',
+	width: '640',
+	events: {
+            'onReady': function() {
+		if (waiting_for_yt_player) {
+		    waiting_for_yt_player = false;
+		    load();
+		}
+	    },
+            'onStateChange': function(event) {
+		if (event.data == YT.PlayerState.ENDED) {
+		    load_next();
+		}
+	    }
+        }
+    });
+}
+
+function load_yt_video(id) {
+    player.loadVideoById(id);
+}
+
+function load_yt_player_async() {
+    // asynchrously download player api, calls onYouTubeIframeAPIReady when finished
+    var tag = document.createElement('script');
+    tag.src = "//www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+}
+
