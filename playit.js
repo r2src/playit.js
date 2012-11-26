@@ -25,6 +25,7 @@ function load_next() {
     load();
 }
 
+// YOUTUBE
 var player;
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
@@ -58,3 +59,7 @@ function load_yt_player_async() {
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
 
+// VIMEO
+function load_vimeo_video(id) {
+    document.getElementById('player') = '<iframe id="player" src="http://player.vimeo.com/video/VIDEO_ID?portrait=0&color=333" width=390 height=640></iframe>';
+}
