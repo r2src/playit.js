@@ -1,21 +1,38 @@
-var container = 'player';
 var index = 0;
-var waiting_for_yt_player = false;
+var width = 800;
+var height = 400;
+var id = 'player';
+var origin = "example.com";
+var playerapiid = 1;
 
-load_yt_player_async();
+init();
 load();
+
+function init() {
+    var newNode = document.createElement('iframe');
+    newNode.width = width;
+    newNode.height = height;
+    newNode.id = id;
+    var oldNode = document.getElementById(id);
+    oldNode.parentNode.replaceChild(newNode,oldNode);
+}
 
 function load() {
     switch (playlist[index].site) {
     case 'GOOGLE':
-	if ('YT' in window && 'Player' in window.YT) {
-	    load_yt_video(playlist[index].id);
-	} else {
-	    waiting_for_yt_player = true;
-	}
-	break;
+        // for documentation see https://developers.google.com/youtube/player_parameters
+        // enablejsapi: make it possible to react to state changes of the player
+        // autoplay: automatically start playing the video
+        // autohide: hide the player controls after a couple of seconds
+        // iv_load_policy: do not show video annotations
+        // origin: the domain on which the iframe is loaded
+        // playerapiid: the id of this player, to identify the player on callbacks
+        // rel: don't show related videos when video finishes
+        // showinfo: don't show title bar at the top of the player
+        document.getElementById(id).src = 'http://www.youtube.com/embed/' + playlist[index].id + '?enablejsapi=1&autoplay=1&autohide=1&iv_load_policy=3&origin=' + origin + '&playerapiid=' + playerapiid + '&rel=0&showinfo=0';
+        break;
     case 'VIMEO':
-	load_vimeo_video(playlist[index].id);
+	document.getElementById(id).src = 'http://player.vimeo.com/video/' + playlist[index].id;
 	break;
     }
 }
@@ -23,43 +40,4 @@ function load() {
 function load_next() {
     index += 1;
     load();
-}
-
-// YOUTUBE
-var player;
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-	height: '390',
-	width: '640',
-	events: {
-            'onReady': function() {
-		if (waiting_for_yt_player) {
-		    waiting_for_yt_player = false;
-		    load();
-		}
-	    },
-            'onStateChange': function(event) {
-		if (event.data == YT.PlayerState.ENDED) {
-		    load_next();
-		}
-	    }
-        }
-    });
-}
-
-function load_yt_video(id) {
-    player.loadVideoById(id);
-}
-
-function load_yt_player_async() {
-    // asynchrously download player api, calls onYouTubeIframeAPIReady when finished
-    var tag = document.createElement('script');
-    tag.src = "//www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-}
-
-// VIMEO
-function load_vimeo_video(id) {
-    document.getElementById('player') = '<iframe id="player" src="http://player.vimeo.com/video/VIDEO_ID?portrait=0&color=333" width=390 height=640></iframe>';
 }
