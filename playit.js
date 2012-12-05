@@ -3,7 +3,7 @@ var width = 800;
 var height = 400;
 var id = 'player';
 var origin = "example.com";
-var playerapiid = 1;
+var playerapiid = 'sensible_name';
 
 init();
 load();
@@ -13,6 +13,10 @@ function init() {
     newNode.width = width;
     newNode.height = height;
     newNode.id = id;
+    // following lines might be necessary for vimeo fullscreen mode..
+    //newNode.setAttribute('webkitAllowFullScreen', '');
+    //newNode.setAttribute('mozallowfullscreen', '');
+    //newNode.setAttribute('allowFullScreen', '');
     var oldNode = document.getElementById(id);
     oldNode.parentNode.replaceChild(newNode,oldNode);
 }
@@ -32,7 +36,14 @@ function load() {
         document.getElementById(id).src = 'http://www.youtube.com/embed/' + playlist[index].id + '?enablejsapi=1&autoplay=1&autohide=1&iv_load_policy=3&origin=' + origin + '&playerapiid=' + playerapiid + '&rel=0&showinfo=0';
         break;
     case 'VIMEO':
-	document.getElementById(id).src = 'http://player.vimeo.com/video/' + playlist[index].id;
+        // for documentation see http://developer.vimeo.com/player/embedding
+        // api: make it possible to react to state changes of the player
+        // autoplay: automatically start playing the video
+        // title: don't show the video's title
+        // byline: don't show the video's byline
+        // portrait: don't show the uploader's portrait
+        // player_id: the id of this player, to identify the player on callbacks
+        document.getElementById(id).src = 'http://player.vimeo.com/video/' + playlist[index].id + '?api=1&title=0&byline=0&portrait=0&autoplay=1&player_id=' + playerapiid;
 	break;
     }
 }
