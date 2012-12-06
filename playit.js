@@ -3,12 +3,27 @@ var width = 800;
 var height = 400;
 var id = 'player';
 var origin = "example.com";
-var playerapiid = 'sensible_name';
+
+// Load YouTube Frame API
+(function(){ //Closure, to not leak to the scope
+     var tag = document.createElement("script");
+     tag.src = "http://www.youtube.com/player_api";
+     var firstScriptTag = document.getElementsByTagName("script")[0];
+     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+ })();
 
 init();
 load();
+var player;
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player(id, {events: {'onStateChange': onPlayerStateChange}});
+}
 
+function onPlayerStateChange(event) {
+    alert('hoi');
+}
 function init() {
+    // build the iframe element
     var newNode = document.createElement('iframe');
     newNode.width = width;
     newNode.height = height;
@@ -33,7 +48,7 @@ function load() {
         // playerapiid: the id of this player, to identify the player on callbacks
         // rel: don't show related videos when video finishes
         // showinfo: don't show title bar at the top of the player
-        document.getElementById(id).src = 'http://www.youtube.com/embed/' + playlist[index].id + '?enablejsapi=1&autoplay=1&autohide=1&iv_load_policy=3&origin=' + origin + '&playerapiid=' + playerapiid + '&rel=0&showinfo=0';
+        document.getElementById(id).src = 'http://www.youtube.com/embed/' + playlist[index].id + '?enablejsapi=1&autoplay=1&autohide=1&iv_load_policy=3&origin=' + origin + '&playerapiid=' + id + '&rel=0&showinfo=0';
         break;
     case 'VIMEO':
         // for documentation see http://developer.vimeo.com/player/embedding
