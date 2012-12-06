@@ -2,7 +2,7 @@ var index = 0;
 var width = 800;
 var height = 400;
 var id = 'player';
-var origin = "example.com";
+var origin = "http://localhost";
 
 // Load YouTube Frame API
 (function(){ //Closure, to not leak to the scope
