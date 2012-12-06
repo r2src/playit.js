@@ -4,8 +4,19 @@
     <meta charset="UTF-8">
   </head>
   <body>
-    <iframe id="player" width="640"height="390"frameborder="0" title="YouTube video player"type="text/html"src="http://www.youtube.com/embed/u1zgFlCw8Aw?enablejsapi=1"></iframe>
+    <div id='player'>Loading...</div>
+    <button onclick="load_next()">Load Next Video</button>
+    
   </body>
-  <script src="helper.js"></script>
+  <script src="jquery-1.8.3.js"></script>
+  <script src="//www.youtube.com/iframe_api"></script>
+  <script>
+    var playlist = [
+    {site: 'GOOGLE', id: 'TR_8SDNQ0ks'},
+    {site: 'GOOGLE', id: 'D2FX9rviEhw'},
+    {site: 'GOOGLE', id: 'UPq1_9DsLKk'},
+    {site: 'VIMEO', id: '4064836'}
+    ]
+  </script>
   <script src="playit.js"></script>
 </html>
